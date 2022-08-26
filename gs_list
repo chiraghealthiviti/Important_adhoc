@@ -1,0 +1,32 @@
+// replace Guitar_Score below with the folder for which you want a listing with all subfolders
+function listFolderContents() {
+  var foldername = 'E.C. Agencies, Goa';
+  // file with this name will be saved in your goolge files
+  var folderlisting = 'listing of folder ' + foldername;  
+  var ss = SpreadsheetApp.create(folderlisting);
+  var sheet = ss.getActiveSheet();
+  var folders = DriveApp.getFoldersByName(foldername)
+  var folder = folders.next();                  
+  //listFilesInFolder(folder, sheet);
+  traverseFolder(folder, sheet);
+};
+
+function traverseFolder(folder, sheet) { 
+  listFilesInFolder(folder, sheet);  
+  var subFolders = folder.getFolders();
+  while (subFolders.hasNext()) {
+    traverseFolder(subFolders.next(), sheet);
+  }
+}
+
+function listFilesInFolder(folder, sheet) {
+  var foldername = folder.getName();
+  var contents = folder.getFiles();  
+  sheet.appendRow( ['...', foldername] );    
+  while(contents.hasNext()) {
+    var file = contents.next();
+    var name = file.getName();
+    var link = file.getUrl();
+    sheet.appendRow( [name, link] );     
+  } 
+}
